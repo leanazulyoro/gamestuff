@@ -1,4 +1,4 @@
-import charImg from './character.png';
+import charImg from '../assets/character.png';
 import React from 'react';
 
 

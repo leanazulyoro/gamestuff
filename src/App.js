@@ -1,8 +1,8 @@
 import React from 'react';
 import './App.css';
-import Game from './Game';
-import level1 from './level1';
-import level2 from './level2';
+import Game from './components/Game';
+import level1 from './levels/level1';
+import level2 from './levels/level2';
 
 
 const style = {

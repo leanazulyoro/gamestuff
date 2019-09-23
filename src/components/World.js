@@ -1,19 +1,13 @@
 import React, { useContext } from 'react';
 import Tile from './Tile';
 import { GameContext } from './Game';
-
+import useGrid from '../hooks/grid';
 
 
 const World = ({grid, rows}) => {
   const {config} = useContext(GameContext);
-  const getTemplateRowsFromNum = (num) => {
-    return `${config.tileWidth}px `.repeat(num);
-  };
-  const style = {
-    display: 'grid',
-    gridTemplateRows: getTemplateRowsFromNum(grid.y),
-    gridTemplateColumns: getTemplateRowsFromNum(grid.x),
-  };
+
+  const style = useGrid(grid, config.tileWidth);
 
   return (
     <div className="world" style={style}>

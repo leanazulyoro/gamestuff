@@ -19,18 +19,22 @@ const Game = ({level}) => {
       case 87:
       case 38:
         setCommand('up');
+        console.log('up');
         break;
       case 68:
       case 39:
         setCommand('right');
+        console.log('right');
         break;
       case 83:
       case 40:
         setCommand('down');
+        console.log('down');
         break;
       case 65:
       case 37:
         setCommand('left');
+        console.log('left');
         break;
     }
   }, []);

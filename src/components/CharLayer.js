@@ -1,18 +1,15 @@
-import React, { useContext } from 'react';
+import React, { useCallback, useContext } from 'react';
 import Tile from './Tile';
 import Character from './Character';
 import { GameContext } from './Game';
+import useGrid from '../hooks/grid';
 
 
 const CharLayer = ({grid, rows}) => {
   const {config} = useContext(GameContext);
-  const getTemplateRowsFromNum = (num) => {
-    return `${config.tileWidth}px `.repeat(num);
-  };
+  const gridStyles = useGrid(grid, config.tileWidth);
   const style = {
-    display: 'grid',
-    gridTemplateRows: getTemplateRowsFromNum(grid.y),
-    gridTemplateColumns: getTemplateRowsFromNum(grid.x),
+    ...gridStyles,
     position: 'absolute',
     top: '-10px',
     left: 0
