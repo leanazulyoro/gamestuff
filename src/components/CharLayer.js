@@ -1,11 +1,10 @@
-import React, { useCallback, useContext } from 'react';
-import Tile from './Tile';
+import React, { useContext } from 'react';
 import Character from './Character';
 import { GameContext } from './Game';
 import useGrid from '../hooks/grid';
 
 
-const CharLayer = ({grid, rows}) => {
+const CharLayer = ({grid}) => {
   const {config} = useContext(GameContext);
   const gridStyles = useGrid(grid, config.tileWidth);
   const style = {
