@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import World from './World';
-import CharLayer from './CharLayer';
+import CharLayer from './CharLayer/CharLayer';
 
 const gameStyle = {
   position: 'relative',
