@@ -14,7 +14,7 @@ const World = ({grid, rows}) => {
       {rows.map(row => {
         return row.tiles.map(tile => {
           return (
-            <Tile size={config.tileWidth} key={tile.key} />
+            <Tile size={config.tileWidth} key={tile.key} type={tile.type} />
           )
         })
       })}
