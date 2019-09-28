@@ -11,9 +11,13 @@ export const GameContext = React.createContext();
 const Game = ({level}) => {
 
   const [activeLayer, setActiveLayer] = useState('char');
-  const [command, setCommand] = useState();
+  const [command, setCommand] = useState(null);
+  const [keydown, setKeydown] = useState(false);
 
   const handleUserKeyPress = useCallback(event => {
+    if(keydown) { return }
+    setKeydown(true);
+
     const { keyCode } = event;
     switch (keyCode) {
       case 87:
@@ -37,10 +41,12 @@ const Game = ({level}) => {
         console.log('left');
         break;
     }
-  }, []);
+  }, [keydown]);
 
   const handleUserKeyUnpress = useCallback(() => {
-    setCommand();
+    setCommand('none');
+    console.log('none');
+    setKeydown(false);
   }, []);
 
 
@@ -51,7 +57,7 @@ const Game = ({level}) => {
       window.removeEventListener('keydown', handleUserKeyPress);
       window.removeEventListener('keyup', handleUserKeyUnpress);
     };
-  }, [handleUserKeyPress]);
+  }, [command, handleUserKeyPress, handleUserKeyUnpress]);
 
   return (
     <GameContext.Provider value={{
