@@ -1,6 +1,6 @@
+import {useReducer} from 'react';
 
-export const initialState = [
-  {
+const initialState = {
     id: 1,
     name: 'Bruce',
     moving: false,
@@ -8,73 +8,63 @@ export const initialState = [
       x: 2,
       y: 2
     }
-  },
-];
+  };
 
-export const reducer = (state, action) => {
-  const targetChar = state.find(char => char.id === action.payload.charId);
+function reducer(state, action) {
+
+  Object.freeze(state);
+  console.log("prevState: ", state);
+  console.log("action: ", action);
   switch(action.type){
     case 'MOVE_UP':
-      return [
-        ...state.filter(char => char.id !== action.payload.charId),
-        {
-          ...targetChar,
+      return {
+          ...state,
           position: {
-            ...targetChar.position,
-            y: targetChar.position.y - action.payload.offset,
+            ...state.position,
+            y: state.position.y - action.payload.offset,
           }
-        }
-      ];
+        };
     case 'MOVE_DOWN':
-      return [
-        ...state.filter(char => char.id !== action.payload.charId),
-        {
-          ...targetChar,
+      console.log('_');
+      return {
+          ...state,
           position: {
-            ...targetChar.position,
-            y: targetChar.position.y + action.payload.offset,
+            ...state.position,
+            y: state.position.y + action.payload.offset,
           }
-        }
-      ];
+        };
     case 'MOVE_LEFT':
-      return [
-        ...state.filter(char => char.id !== action.payload.charId),
-        {
-          ...targetChar,
+      return {
+          ...state,
           position: {
-            ...targetChar.position,
-            x: targetChar.position.x - action.payload.offset,
+            ...state.position,
+            x: state.position.x - action.payload.offset,
           }
-        }
-      ];
+        };
     case 'MOVE_RIGHT':
-      return [
-        ...state.filter(char => char.id !== action.payload.charId),
-        {
-          ...targetChar,
+      console.log('!');
+      return {
+          ...state,
           position: {
-            ...targetChar.position,
-            x: targetChar.position.x + action.payload.offset,
+            ...state.position,
+            x: state.position.x + action.payload.offset,
           }
-        }
-      ];
+        };
     case 'STOP':
-      return [
-        ...state.filter(char => char.id !== action.payload.charId),
-        {
-          ...targetChar,
+      return {
+          ...state,
           moving: false,
-        }
-      ];
+        };
     case 'MOVE':
-      return [
-        ...state.filter(char => char.id !== action.payload.charId),
-        {
-          ...targetChar,
+      return {
+          ...state,
           moving: true,
-        }
-      ];
+        };
     default:
       return state;
   }
 };
+
+export function useMoveReducer() {
+  return useReducer(reducer, initialState);
+}
