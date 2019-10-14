@@ -3,11 +3,12 @@ import Character from '../Character';
 import { GameContext } from '../Game';
 import useGrid from '../../hooks/grid';
 import { initialState, reducer } from './reducer';
+import limiter from '../../helpers/limiter';
 
 const OFFSET = 1;
 
 const CharLayer = ({grid}) => {
-  const {config, command } = useContext(GameContext);
+  const {config, command, level } = useContext(GameContext);
   const gridStyles = useGrid(grid, config.tileWidth);
   const [active, setActive] = useState(1);
   const [state, dispatch] = useReducer(reducer, initialState);
@@ -24,28 +25,53 @@ const CharLayer = ({grid}) => {
   };
 
 
-  const move = async (direction) => {
+  const canMoveTo = (direction, {x, y}) => {
+    let nextTile = null;
+    switch (direction) {
+      case 'up':
+        nextTile = level.rows[y-OFFSET] ? level.rows[y-OFFSET].tiles[x] : null;
+        break;
+      case 'right':
+        nextTile = level.rows[y-OFFSET] ? level.rows[y].tiles[x+OFFSET] : null;
+        break;
+      case 'down':
+        nextTile = level.rows[y-OFFSET] ? level.rows[y+OFFSET].tiles[x] : null;
+        break;
+      case 'left':
+        nextTile = level.rows[y-OFFSET] ? level.rows[y].tiles[x-OFFSET] : null;
+        break;
+    }
+    if(nextTile) {
+      return nextTile.walkable
+    }
+    return false;
+  };
+
+  const move = limiter(async (direction) => {
     const activeCharacter = selectCharacter(active);
-    if(activeCharacter.moving) { return }
-    await dispatch({
-      type: 'MOVE',
-      payload: { charId: active }
-    });
-    await dispatch({
-      type: `MOVE_${direction.toUpperCase()}`,
-      payload: { charId: active, offset: OFFSET }
-    });
-    setIntervals([...intervals, setInterval(async () => {
-      await dispatch({
-        type: `MOVE_${direction.toUpperCase()}`,
-        payload: { charId: active, offset: OFFSET }
-      });
+    if(canMoveTo(direction, activeCharacter.position)) {
+      if (!activeCharacter.moving) {
+        await dispatch({
+          type: `MOVE_${direction.toUpperCase()}`,
+          payload: { charId: active, offset: OFFSET }
+        });
+      }
+    }
+  }, 300);
+
+  const startMoving = (direction) => {
+    move(direction);
+    setIntervals([...intervals, setInterval(() => {
+      move(direction)
     }, 300)]);
   };
 
+
   const stop = () => {
     const activeCharacter = selectCharacter(active);
-    if(!activeCharacter.moving) { return }
+
+    // prevent new move before current move is over
+    //if(!activeCharacter.moving) { return }
     intervals.map(i => clearInterval(i));
     dispatch({
       type: 'STOP',
@@ -60,7 +86,7 @@ const CharLayer = ({grid}) => {
       case 'right':
       case 'down':
       case 'left':
-        move(command);
+        startMoving(command);
         break;
       case 'none':
         stop();

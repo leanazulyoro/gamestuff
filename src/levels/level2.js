@@ -18,11 +18,11 @@ const level1 ={
     },
     {
       tiles: [
-        { key: 9, type: 'wall', walkable: false },
+        { key: 9, type: 'regular', walkable: true },
         { key: 10, type: 'regular', walkable: true },
         { key: 11, type: 'regular', walkable: true },
         { key: 12, type: 'regular', walkable: true },
-        { key: 13, type: 'regular', walkable: true },
+        { key: 13, type: 'wall', walkable: false },
         { key: 14, type: 'regular', walkable: true },
         { key: 15, type: 'regular', walkable: true },
         { key: 16, type: 'wall', walkable: false },

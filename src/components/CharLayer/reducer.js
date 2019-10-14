@@ -12,6 +12,7 @@ export const initialState = [
 ];
 
 export const reducer = (state, action) => {
+  Object.freeze(state);
   const targetChar = state.find(char => char.id === action.payload.charId);
   switch(action.type){
     case 'MOVE_UP':
@@ -19,6 +20,7 @@ export const reducer = (state, action) => {
         ...state.filter(char => char.id !== action.payload.charId),
         {
           ...targetChar,
+          moving: true,
           position: {
             ...targetChar.position,
             y: targetChar.position.y - action.payload.offset,
@@ -30,6 +32,7 @@ export const reducer = (state, action) => {
         ...state.filter(char => char.id !== action.payload.charId),
         {
           ...targetChar,
+          moving: true,
           position: {
             ...targetChar.position,
             y: targetChar.position.y + action.payload.offset,
@@ -41,6 +44,7 @@ export const reducer = (state, action) => {
         ...state.filter(char => char.id !== action.payload.charId),
         {
           ...targetChar,
+          moving: true,
           position: {
             ...targetChar.position,
             x: targetChar.position.x - action.payload.offset,
@@ -52,6 +56,7 @@ export const reducer = (state, action) => {
         ...state.filter(char => char.id !== action.payload.charId),
         {
           ...targetChar,
+          moving: true,
           position: {
             ...targetChar.position,
             x: targetChar.position.x + action.payload.offset,
