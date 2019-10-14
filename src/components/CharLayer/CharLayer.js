@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useReducer, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useReducer, useState } from 'react';
 import Character from '../Character';
 import { GameContext } from '../Game';
 import useGrid from '../../hooks/grid';
@@ -12,7 +12,6 @@ const CharLayer = ({grid}) => {
   const gridStyles = useGrid(grid, config.tileWidth);
   const [active, setActive] = useState(1);
   const [state, dispatch] = useReducer(reducer, initialState);
-  const [intervals, setIntervals] = useState([]);
   const style = {
     ...gridStyles,
     position: 'absolute',
@@ -47,52 +46,31 @@ const CharLayer = ({grid}) => {
     return false;
   };
 
-  const move = limiter(async (direction) => {
+  const move = useCallback((direction) => {
     const activeCharacter = selectCharacter(active);
     if(canMoveTo(direction, activeCharacter.position)) {
-      if (!activeCharacter.moving) {
-        await dispatch({
-          type: `MOVE_${direction.toUpperCase()}`,
-          payload: { charId: active, offset: OFFSET }
-        });
-      }
+      dispatch({
+        type: `MOVE_${direction.toUpperCase()}`,
+        payload: { charId: active, offset: OFFSET }
+      });
     }
-  }, 300);
+  }, [command]);
 
-  const startMoving = (direction) => {
-    move(direction);
-    setIntervals([...intervals, setInterval(() => {
-      move(direction)
-    }, 300)]);
-  };
+  const stop = () => dispatch({ type: 'STOP', payload: { charId: active } });
 
-
-  const stop = () => {
-    const activeCharacter = selectCharacter(active);
-
-    // prevent new move before current move is over
-    //if(!activeCharacter.moving) { return }
-    intervals.map(i => clearInterval(i));
-    dispatch({
-      type: 'STOP',
-      payload: { charId: active }
-    });
-  };
 
   useEffect(() => {
-
-    switch(command) {
+    switch(command.name) {
       case 'up':
       case 'right':
       case 'down':
       case 'left':
-        startMoving(command);
+        move(command.name);
         break;
       case 'none':
         stop();
         break;
     }
-
   }, [command]);
 
   return (

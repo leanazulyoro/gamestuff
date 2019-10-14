@@ -1,6 +1,9 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import World from './World';
 import CharLayer from './CharLayer/CharLayer';
+import KeyboardController from '../helpers/keyboardController';
+import useTic from '../hooks/tic';
+import * as shortid from 'shortid';
 
 const gameStyle = {
   position: 'relative',
@@ -8,59 +11,39 @@ const gameStyle = {
 
 export const GameContext = React.createContext();
 
+const TIC_TIMEOUT = 300;
+
 const Game = ({level}) => {
 
   const [activeLayer, setActiveLayer] = useState('char');
-  const [command, setCommand] = useState(null);
-  const [keydown, setKeydown] = useState(false);
-
-  const handleUserKeyPress = useCallback(event => {
-    if(keydown) { return }
-    setKeydown(true);
-
-    const { keyCode } = event;
-    switch (keyCode) {
-      case 87:
-      case 38:
-        setCommand('up');
-        console.log('up');
-        break;
-      case 68:
-      case 39:
-        setCommand('right');
-        console.log('right');
-        break;
-      case 83:
-      case 40:
-        setCommand('down');
-        console.log('down');
-        break;
-      case 65:
-      case 37:
-        setCommand('left');
-        console.log('left');
-        break;
-    }
-  }, [keydown]);
-
-  const handleUserKeyUnpress = useCallback(() => {
-    setCommand('none');
-    console.log('none');
-    setKeydown(false);
-  }, []);
-
+  const [command, setCommand] = useState({name: 'none'});
+  const tic = useTic(TIC_TIMEOUT);
 
   useEffect(() => {
-    window.addEventListener('keydown', handleUserKeyPress);
-    window.addEventListener('keyup', handleUserKeyUnpress);
-    return () => {
-      window.removeEventListener('keydown', handleUserKeyPress);
-      window.removeEventListener('keyup', handleUserKeyUnpress);
-    };
-  }, [command, handleUserKeyPress, handleUserKeyUnpress]);
+    KeyboardController(
+      {
+        38: function() { setCommand({id: shortid.generate(), name: 'up'}); },
+        87: function() { setCommand({id: shortid.generate(), name: 'up'}); },
+
+        39: function() { setCommand({id: shortid.generate(), name: 'right'}); },
+        68: function() { setCommand({id: shortid.generate(), name: 'right'}); },
+
+        40: function() { setCommand({id: shortid.generate(), name: 'down'}); },
+        83: function() { setCommand({id: shortid.generate(), name: 'down'}); },
+
+        37: function() { setCommand({id: shortid.generate(), name: 'left'}); },
+        65: function() { setCommand({id: shortid.generate(), name: 'left'}); },
+      },
+      TIC_TIMEOUT,
+      () => {
+        setCommand({id: shortid.generate(), name: 'none'})
+      }
+    );
+  }, []);
 
   return (
     <GameContext.Provider value={{
+      tic,
       level,
       activeLayer,
       command,
