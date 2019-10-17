@@ -1,13 +1,12 @@
 import React, { useCallback, useContext, useEffect, useReducer, useState } from 'react';
 import Character from '../Character';
-import { GameContext } from '../Game';
+import { GameContext, TIC_TIMEOUT } from '../Game';
 import useGrid from '../../hooks/grid';
 import { initialState, reducer } from './reducer';
-import limiter from '../../helpers/limiter';
 
 const OFFSET = 1;
 
-const CharLayer = ({grid}) => {
+const CharLayer = ({grid, afterMove}) => {
   const {config, command, level } = useContext(GameContext);
   const gridStyles = useGrid(grid, config.tileWidth);
   const [active, setActive] = useState(1);
@@ -23,36 +22,42 @@ const CharLayer = ({grid}) => {
     return state.find(char => char.id === id);
   };
 
+const getNextTile = (direction, {x, y}) => {
+  let row = null;
+  switch (direction) {
+    case 'up':
+      row = level.rows[y-OFFSET];
+      return row ? row.tiles[x] ? row.tiles[x] : null : null;
+    case 'right':
+      row = level.rows[y];
+      return row ? row.tiles[x+OFFSET] ? row.tiles[x+OFFSET] : null : null;
+    case 'down':
+      row = level.rows[y+OFFSET];
+      return row ? row.tiles[x] ? row.tiles[x] : null : null;
+    case 'left':
+      row = level.rows[y];
+      return row ? row.tiles[x-OFFSET] ? row.tiles[x-OFFSET] : null : null;
+    default:
+      return null
+  }
+};
 
-  const canMoveTo = (direction, {x, y}) => {
-    let nextTile = null;
-    switch (direction) {
-      case 'up':
-        nextTile = level.rows[y-OFFSET] ? level.rows[y-OFFSET].tiles[x] : null;
-        break;
-      case 'right':
-        nextTile = level.rows[y-OFFSET] ? level.rows[y].tiles[x+OFFSET] : null;
-        break;
-      case 'down':
-        nextTile = level.rows[y-OFFSET] ? level.rows[y+OFFSET].tiles[x] : null;
-        break;
-      case 'left':
-        nextTile = level.rows[y-OFFSET] ? level.rows[y].tiles[x-OFFSET] : null;
-        break;
-    }
-    if(nextTile) {
-      return nextTile.walkable
-    }
-    return false;
-  };
+  const canMoveTo = (nextTile) => {
+    console.log(nextTile);
+    if(!nextTile) { return false }
+    return nextTile ? nextTile.walkable : false;}
 
-  const move = useCallback((direction) => {
+  const move = useCallback(async (direction) => {
     const activeCharacter = selectCharacter(active);
-    if(canMoveTo(direction, activeCharacter.position)) {
-      dispatch({
+    const nextTile = getNextTile(direction,  activeCharacter.position);
+    if(canMoveTo(nextTile)) {
+      await dispatch({
         type: `MOVE_${direction.toUpperCase()}`,
         payload: { charId: active, offset: OFFSET }
       });
+      setTimeout(() => {
+        if(typeof afterMove === 'function') { afterMove(nextTile); }
+      }, TIC_TIMEOUT)
     }
   }, [command]);
 

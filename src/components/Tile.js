@@ -3,6 +3,7 @@ import React from 'react';
 const tileColors = {
   regular: 'lightsalmon',
   wall: 'goldenrod',
+  portal: 'black',
 };
 
 
