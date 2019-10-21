@@ -14,7 +14,7 @@ const CharLayer = ({grid, afterMove}) => {
   const style = {
     ...gridStyles,
     position: 'absolute',
-    top: '-10px',
+    top: '-5%',
     left: 0,
   };
 
@@ -43,9 +43,9 @@ const getNextTile = (direction, {x, y}) => {
 };
 
   const canMoveTo = (nextTile) => {
-    console.log(nextTile);
     if(!nextTile) { return false }
-    return nextTile ? nextTile.walkable : false;}
+    return nextTile ? nextTile.walkable : false;
+  };
 
   const move = useCallback(async (direction) => {
     const activeCharacter = selectCharacter(active);

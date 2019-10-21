@@ -59,7 +59,7 @@ const Game = ({level}) => {
       activeLayer,
       command,
       config: {
-        tileWidth: 50,
+        tileWidth: 32,
       }
     }}>
       <div className="game" style={gameStyle}>
