@@ -1,0 +1,27 @@
+
+.char {
+  box-sizing: border-box;
+  position: absolute;
+  image-rendering: pixelated;
+}
+
+.idle {
+  animation: idle 4100ms steps(1) infinite;
+}
+
+.layo {
+  background: url('../assets/idle_right-sheet.png') no-repeat;
+}
+
+
+@keyframes idle {
+  50% {
+    background-position: 0 0;
+  }
+  52% {
+    background-position: -32px 0;
+  }
+  54% {
+    background-position: -64px 0;
+  }
+}

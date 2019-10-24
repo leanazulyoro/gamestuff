@@ -1,5 +1,5 @@
 const level = {
-  name: 'level 2',
+  name: 'level 4',
   grid: {
     x: 8,
     y: 5
@@ -19,11 +19,11 @@ const level = {
     },
     {
       tiles: [
-        { key: 9, type: 'regular', walkable: true },
+        { key: 9, type: 'wall', walkable: false },
         { key: 10, type: 'regular', walkable: true },
         { key: 11, type: 'regular', walkable: true },
         { key: 12, type: 'regular', walkable: true },
-        { key: 13, type: 'wall', walkable: false },
+        { key: 13, type: 'regular', walkable: true },
         { key: 14, type: 'regular', walkable: true },
         { key: 15, type: 'regular', walkable: true },
         { key: 16, type: 'wall', walkable: false },
@@ -36,7 +36,7 @@ const level = {
         { key: 19, type: 'regular', walkable: true },
         { key: 20, type: 'regular', walkable: true },
         { key: 21, type: 'regular', walkable: true },
-        { key: 22, type: 'regular', walkable: true },
+        { key: 22, type: 'portal', walkable: true, action: { type: 'teleport', to: 5} },
         { key: 23, type: 'regular', walkable: true },
         { key: 24, type: 'wall', walkable: false },
       ],

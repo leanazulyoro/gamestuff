@@ -1,4 +1,5 @@
-const level1 ={
+const level = {
+  name: 'level 3',
   grid: {
     x: 8,
     y: 5
@@ -56,4 +57,4 @@ const level1 ={
 };
 
 
-export default level1;
+export default level;
