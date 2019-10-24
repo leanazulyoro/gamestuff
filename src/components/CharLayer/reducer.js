@@ -2,7 +2,7 @@
 export const initialState = [
   {
     id: 1,
-    name: 'Bruce',
+    name: 'Layo',
     moving: false,
     position: {
       x: 2,
